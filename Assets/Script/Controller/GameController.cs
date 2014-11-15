@@ -20,11 +20,14 @@ namespace Drop
 
         void CreatePlayerAvatars()
         {
+			Game.Instance.Players = new GameObject[Game.Instance.PlayerCount];
+
             for (int i = 0; i < Game.Instance.PlayerCount; i++ )
             {
                 GameObject player = Instantiate(PlayerPrefab) as GameObject;
 				player.transform.position = new Vector3(0, i * 10, 0);
                 player.GetComponent<PlayerController>().playerId = i;
+				Game.Instance.Players[i] = player;
             }
         }
 

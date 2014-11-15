@@ -35,11 +35,7 @@ namespace Drop
         // Public members                //
         //-------------------------------//
         public int PlayerCount;
-
-        //-------------------------------//
-        // Configuration                 //
-        //-------------------------------//
-        public int VoxelsAddedPerShot = 5;
+		public GameObject[] Players;
 
     }
 }
