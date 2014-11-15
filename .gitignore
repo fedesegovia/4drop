@@ -19,11 +19,11 @@ release/
 /*.tmproj
 /*.dwlt
 
-./Library/cache/*
-./Library/metadata/*
-./Library/previews/*
-./Library/ScriptAssemblies/*
-
+Library/cache/*
+Library/metadata/*
+Library/previews/*
+Library/ScriptAssemblies/*
+Library/
 Builds/*
 
 AnnotationManager
