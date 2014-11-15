@@ -19,10 +19,10 @@ release/
 /*.tmproj
 /*.dwlt
 
-UnityProject/Library/cache/*
-UnityProject/Library/metadata/*
-UnityProject/Library/previews/*
-UnityProject/Library/ScriptAssemblies/*
+./Library/cache/*
+./Library/metadata/*
+./Library/previews/*
+./Library/ScriptAssemblies/*
 
 Builds/*
 
