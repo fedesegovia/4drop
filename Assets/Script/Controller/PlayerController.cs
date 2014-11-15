@@ -5,24 +5,35 @@ using InControl;
 namespace Drop
 { 
     public class PlayerController : MonoBehaviour {
-        public int playerId = 0;
+        public int PlayerId = 0;
         public float speed = 50; // Speed is messured in units per second. One Unity unit equals one meter.
 
 		InputDevice PlayerInputDevice;
 
+		public Sprite[] PlayerSprites;
 
 
 		Vector3 direction = Vector3.zero;
 		Vector3 deltaToNewPosition = Vector3.zero;
 
-
 		void Start()
         {
-            PlayerInputDevice = InputManager.Devices[playerId];
+			UpdatePlayerInput ();
+			UpdatePlayerSprite ();
+		}
+
+		void UpdatePlayerInput ()
+		{
+			PlayerInputDevice = InputManager.Devices[PlayerId];
+		}
+
+		void UpdatePlayerSprite ()
+		{
+			GetComponent<SpriteRenderer> ().sprite = PlayerSprites [PlayerId];
 		}
 
 	    void Update () {
-            PlayerInputDevice = (InputManager.Devices.Count > playerId) ? InputManager.Devices[playerId] : null;
+            PlayerInputDevice = (InputManager.Devices.Count > PlayerId) ? InputManager.Devices[PlayerId] : null;
             if (PlayerInputDevice == null)
             {
                 // No Controller for this player....

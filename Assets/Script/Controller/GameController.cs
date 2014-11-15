@@ -26,7 +26,7 @@ namespace Drop
             {
                 GameObject player = Instantiate(PlayerPrefab) as GameObject;
 				player.transform.position = new Vector3(0, i * 10, 0);
-                player.GetComponent<PlayerController>().playerId = i;
+                player.GetComponent<PlayerController>().PlayerId = i;
 				Game.Instance.Players[i] = player;
             }
         }
