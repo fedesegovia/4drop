@@ -6,19 +6,20 @@ namespace Drop
 { 
     public class PlayerController : MonoBehaviour {
         public int playerId = 0;
-        public float speed = 50; // Speed is messured in units per second. One Unity unit equals one meter.
+        public float health = 50.0f;
+        public float speed = 50.0f; // Speed is messured in units per second. One Unity unit equals one meter.
 
 		InputDevice PlayerInputDevice;
 
-
-
-		Vector3 direction = Vector3.zero;
+		Vector3 movementDirection = Vector3.zero;
+		Vector3 shootingDirection = Vector3.zero;
 		Vector3 deltaToNewPosition = Vector3.zero;
-
+		Weapon weapon;
 
 		void Start()
         {
             PlayerInputDevice = InputManager.Devices[playerId];
+			weapon = GetComponentInChildren<Weapon>();
 		}
 
 	    void Update () {
@@ -42,49 +43,27 @@ namespace Drop
 
 		void UpdateVelocity ()
 		{
-			rigidbody2D.velocity = PlayerInputDevice.Direction.Vector * speed;
+			rigidbody2D.velocity = PlayerInputDevice.LeftStick.Vector * speed;
 		}
 
 		void RotateToFaceCorrectDirection ()
 		{
-			direction.Set (PlayerInputDevice.Direction.X, PlayerInputDevice.Direction.Y, 0);
-			if ( direction.magnitude > Config.Instance.InputControllerSensitivity )
+			movementDirection.Set (PlayerInputDevice.LeftStick.X, PlayerInputDevice.LeftStick.Y, 0);
+			if ( movementDirection.magnitude > Config.Instance.InputControllerSensitivity )
 			{
-				deltaToNewPosition = direction - transform.position;
-				float eulerRotationInZ = Mathf.Atan2 (direction.y, direction.x) * Mathf.Rad2Deg;
+				deltaToNewPosition = movementDirection - transform.position;
+				float eulerRotationInZ = Mathf.Atan2 (movementDirection.y, movementDirection.x) * Mathf.Rad2Deg;
 				transform.rotation = Quaternion.Euler (0, 0, eulerRotationInZ - 90);
 			}
 		}
 
 		void Shoot()
 		{
-//            TwoAxisInputControl rightStick = PlayerInputDevice.RightStick;
-//            Vector2 direction = rightStick.Vector;
-//
-//			Debug.Log (direction);
-//
-//			if (Mathf.Abs (direction.x) > .7f)
-//				direction = (Vector2.right * direction.x).normalized;
-//			
-//			if (Mathf.Abs (direction.y) > .7f)
-//				direction = (Vector2.up * direction.y).normalized;
-//
-//			if (direction.magnitude > .7f) 
-//			{
-//				if(transform.childCount > 0)
-//				{
-//					voxelTransform = transform.GetChild(0);
-//					
-//					if (voxelTransform != null)
-//					{
-//						voxelTransform.parent = null;
-//						PutBulletControllerOnVoxel(voxelTransform.gameObject);
-//						
-//						voxelTransform.GetComponent<BulletController>().Direction.Set(direction.x, 0, direction.y);
-//						voxelsCount--;
-//					}
-//				}
-//			}
+			shootingDirection.Set(PlayerInputDevice.RightStick.X, PlayerInputDevice.RightStick.Y, 0);
+
+			if(weapon && shootingDirection.magnitude > Config.Instance.InputControllerSensitivity){
+				weapon.Shoot(shootingDirection);
+			}
         }
 	}
 }

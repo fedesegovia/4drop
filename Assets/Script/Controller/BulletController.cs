@@ -4,15 +4,27 @@ using System.Collections;
 namespace Drop
 { 
     public class BulletController : MonoBehaviour {
-
-        public PlayerController Player;
-        public Vector3 Direction;
-        public float Speed = 60f;
-        public float TimeToComeBack = 1;
-        float counter = 0;
+		public Weapon parentWeapon = null;
+		public Vector3 direction;
+        public float speed = 60f;
+		public float damage = 3.0f;
 
 	    void FixedUpdate () {
-            transform.position += Direction * Speed * Time.deltaTime;
+			transform.position += direction * speed * Time.deltaTime;
 	    }
+
+		void OnEnable(){
+			transform.up = direction;
+		}
+
+		void OnBecameInvisible(){
+			RecycleBullet();
+		}
+
+		void RecycleBullet(){
+			if(parentWeapon){
+				parentWeapon.LoadBullet(this);
+			}
+		}
     }
 }
