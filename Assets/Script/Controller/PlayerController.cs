@@ -77,7 +77,7 @@ namespace Drop
 		}
 
 		void Die(){
-
+			gameObject.SetActive(false);
 		}
 	}
 }
