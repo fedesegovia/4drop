@@ -10,8 +10,8 @@ namespace Drop
 		public int damage = 3;
 		public bool inWeapon = true;
 
-	    void FixedUpdate () {
-			transform.position += direction * speed * Time.deltaTime;
+	    void Update () {
+			transform.position += direction.normalized * speed * Time.deltaTime;
 	    }
 
 		void OnBecameInvisible(){
