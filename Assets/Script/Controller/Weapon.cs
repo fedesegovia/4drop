@@ -5,7 +5,7 @@ namespace Drop
 {
 	public class Weapon : MonoBehaviour {
 		public GameObject bulletPrefab;
-		public int maxBullets = 100;
+		public int maxBullets = 20;
 		public float minimumDelay = 0.3f;
 		GameObject[] bullets;
 		int remainingBullets = 0;
@@ -25,8 +25,10 @@ namespace Drop
 					currentBulletController = bullets[remainingBullets].GetComponent<BulletController>();
 
 					currentBulletController.direction = direction;
+					currentBulletController.transform.up = direction;
 					currentBulletController.parentWeapon = this;
 					currentBulletController.transform.position = transform.position;
+					currentBulletController.inWeapon = false;
 					currentBulletController.gameObject.SetActive(true);
 
 					lastShotTime = Time.timeSinceLevelLoad;
@@ -47,6 +49,7 @@ namespace Drop
 		public void LoadBullet(BulletController bullet){
 			if(remainingBullets < maxBullets){
 				bullets[remainingBullets] = bullet.gameObject;
+				bullets[remainingBullets].GetComponent<BulletController>().inWeapon = true;
 				bullets[remainingBullets].SetActive(false);
 
 				remainingBullets++;

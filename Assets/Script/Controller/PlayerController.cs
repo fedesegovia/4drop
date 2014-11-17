@@ -6,7 +6,7 @@ namespace Drop
 { 
     public class PlayerController : MonoBehaviour {
         public int playerId = 0;
-        public float health = 50.0f;
+        public int health = 50;
         public float speed = 50.0f; // Speed is messured in units per second. One Unity unit equals one meter.
 
 		InputDevice PlayerInputDevice;
@@ -65,5 +65,19 @@ namespace Drop
 				weapon.Shoot(shootingDirection);
 			}
         }
+
+		public void AbsorbDamage(int damage){
+			health -= damage;
+
+			if(health <= 0){
+				health = 0;
+
+				Die();
+			}
+		}
+
+		void Die(){
+
+		}
 	}
 }

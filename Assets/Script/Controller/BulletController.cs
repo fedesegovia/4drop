@@ -7,22 +7,30 @@ namespace Drop
 		public Weapon parentWeapon = null;
 		public Vector3 direction;
         public float speed = 60f;
-		public float damage = 3.0f;
+		public int damage = 3;
+		public bool inWeapon = true;
 
 	    void FixedUpdate () {
 			transform.position += direction * speed * Time.deltaTime;
 	    }
 
-		void OnEnable(){
-			transform.up = direction;
-		}
-
 		void OnBecameInvisible(){
 			RecycleBullet();
 		}
 
+		void OnTriggerEnter2D(Collider2D hitCollider){
+			if(hitCollider.gameObject != parentWeapon.transform.parent.gameObject){
+				PlayerController player = hitCollider.GetComponent<PlayerController>();
+
+				if(player){
+					player.AbsorbDamage(damage);
+					RecycleBullet();
+				}
+			}
+		}
+
 		void RecycleBullet(){
-			if(parentWeapon){
+			if(parentWeapon && !inWeapon){
 				parentWeapon.LoadBullet(this);
 			}
 		}
