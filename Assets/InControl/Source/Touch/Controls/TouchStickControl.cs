@@ -83,7 +83,7 @@ namespace InControl
 
 		public override void ConfigureControl()
 		{
-			resetPosition = OffsetToWorldPosition( anchor, offset, offsetUnitType );
+			resetPosition = OffsetToWorldPosition( anchor, offset, offsetUnitType, true );
 			transform.position = resetPosition;
 
 			ring.Update( true );

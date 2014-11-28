@@ -17,6 +17,9 @@ namespace InControl
 		[SerializeField]
 		Vector2 offset = new Vector2( -10.0f, 10.0f );
 
+		[SerializeField]
+		bool lockAspectRatio = true;
+
 
 		[Header( "Options" )]
 
@@ -55,7 +58,7 @@ namespace InControl
 
 		public override void ConfigureControl()
 		{
-			transform.position = OffsetToWorldPosition( anchor, offset, offsetUnitType );
+			transform.position = OffsetToWorldPosition( anchor, offset, offsetUnitType, lockAspectRatio );
 			button.Update( true );
 		}
 

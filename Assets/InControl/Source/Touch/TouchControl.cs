@@ -104,7 +104,7 @@ namespace InControl
 		}
 
 
-		protected Vector3 OffsetToWorldPosition( TouchControlAnchor anchor, Vector2 offset, TouchUnitType offsetUnitType )
+		protected Vector3 OffsetToWorldPosition( TouchControlAnchor anchor, Vector2 offset, TouchUnitType offsetUnitType, bool lockAspectRatio )
 		{
 			Vector3 worldOffset;
 			if (offsetUnitType == TouchUnitType.Pixels)
@@ -113,7 +113,14 @@ namespace InControl
 			}
 			else
 			{
-				worldOffset = (Vector3) offset * TouchManager.PercentToWorld;
+				if (lockAspectRatio)
+				{
+					worldOffset = (Vector3) offset * TouchManager.PercentToWorld;
+				}
+				else
+				{
+					worldOffset = Vector3.Scale( offset, TouchManager.ViewSize );
+				}
 			}
 			return TouchManager.ViewToWorldPoint( TouchUtility.AnchorToViewPoint( anchor ) ) + worldOffset;
 		}

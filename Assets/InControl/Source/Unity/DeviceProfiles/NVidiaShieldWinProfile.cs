@@ -5,63 +5,72 @@ namespace InControl
 {
 	// @cond nodoc
 	[AutoDiscover]
-	public class PlayStationVitaPSMProfile : UnityInputDeviceProfile
+	public class NVidiaShieldTabletProfile : UnityInputDeviceProfile
 	{
-		public PlayStationVitaPSMProfile()
+		public NVidiaShieldTabletProfile()
 		{
-			Name = "PlayStation Mobile";
-			Meta = "PlayStation Mobile on Vita";
+			Name = "NVIDIA Shield Controller";
+			Meta = "NVIDIA Shield Controller on Windows";
 
 			SupportedPlatforms = new[] {
-				"PSM UNITY FOR PSM",
-				"PSM ON PS VITA",
-				"PS VITA"
+				"Windows"
 			};
 
 			JoystickNames = new[] {
-				"PS Vita"
+				"NVIDIA Controller v01.03",
 			};
 
 			ButtonMappings = new[] {
 				new InputControlMapping {
-					Handle = "Cross",
+					Handle = "A",
 					Target = InputControlType.Action1,
-					Source = Button0
+					Source = Button9
 				},
 				new InputControlMapping {
-					Handle = "Circle",
+					Handle = "B",
 					Target = InputControlType.Action2,
-					Source = Button1
+					Source = Button8
 				},
 				new InputControlMapping {
-					Handle = "Square",
+					Handle = "X",
 					Target = InputControlType.Action3,
-					Source = Button2
+					Source = Button7
 				},
 				new InputControlMapping {
-					Handle = "Triangle",
+					Handle = "Y",
 					Target = InputControlType.Action4,
-					Source = Button3
+					Source = Button6
 				},
 				new InputControlMapping {
 					Handle = "Left Bumper",
 					Target = InputControlType.LeftBumper,
-					Source = Button4
+					Source = Button5
 				},
 				new InputControlMapping {
 					Handle = "Right Bumper",
 					Target = InputControlType.RightBumper,
-					Source = Button5
+					Source = Button4
 				},
 				new InputControlMapping {
-					Handle = "Select",
+					Handle = "Left Stick Button",
+					Target = InputControlType.LeftStickButton,
+					Source = Button3
+				},
+				new InputControlMapping {
+					Handle = "Right Stick Button",
+					Target = InputControlType.RightStickButton,
+					Source = Button2
+				},
+				new InputControlMapping
+				{
+					Handle = "Back",
 					Target = InputControlType.Select,
-					Source = Button6
+					Source = Button11
 				},
 				new InputControlMapping {
 					Handle = "Start",
 					Target = InputControlType.Start,
-					Source = Button7
+					Source = Button0
 				}
 			};
 
@@ -80,18 +89,18 @@ namespace InControl
 				new InputControlMapping {
 					Handle = "Right Stick X",
 					Target = InputControlType.RightStickX,
-					Source = Analog3
+					Source = Analog2
 				},
 				new InputControlMapping {
 					Handle = "Right Stick Y",
 					Target = InputControlType.RightStickY,
-					Source = Analog4,
+					Source = Analog3,
 					Invert = true
 				},
 				new InputControlMapping {
 					Handle = "DPad Left",
 					Target = InputControlType.DPadLeft,
-					Source = Analog5,
+					Source = Analog4,
 					SourceRange = InputControlMapping.Range.Negative,
 					TargetRange = InputControlMapping.Range.Negative,
 					Invert = true
@@ -99,26 +108,38 @@ namespace InControl
 				new InputControlMapping {
 					Handle = "DPad Right",
 					Target = InputControlType.DPadRight,
-					Source = Analog5,
+					Source = Analog4,
 					SourceRange = InputControlMapping.Range.Positive,
 					TargetRange = InputControlMapping.Range.Positive
 				},
 				new InputControlMapping {
 					Handle = "DPad Up",
 					Target = InputControlType.DPadUp,
-					Source = Analog6,
+					Source = Analog5,
 					SourceRange = InputControlMapping.Range.Positive,
-					TargetRange = InputControlMapping.Range.Positive
+					TargetRange = InputControlMapping.Range.Positive,
+					Invert = true
 				},
 				new InputControlMapping {
 					Handle = "DPad Down",
 					Target = InputControlType.DPadDown,
-					Source = Analog6,
+					Source = Analog5,
 					SourceRange = InputControlMapping.Range.Negative,
-					TargetRange = InputControlMapping.Range.Negative,
-					Invert = true
+					TargetRange = InputControlMapping.Range.Negative
+				},
+				new InputControlMapping {
+					Handle = "Left Trigger",
+					Target = InputControlType.LeftTrigger,
+					Source = Analog6
+				},
+				new InputControlMapping {
+					Handle = "Right Trigger",
+					Target = InputControlType.RightTrigger,
+					Source = Analog7
 				}
 			};
 		}
 	}
 }
+
+

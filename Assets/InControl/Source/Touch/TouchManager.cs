@@ -39,10 +39,13 @@ namespace InControl
 		float halfPixelToWorld;
 		TouchControl[] touchControls;
 		Touch[] cachedTouches;
-		Touch mouseTouch;
 		List<Touch> activeTouches;
 		ReadOnlyCollection<Touch> readOnlyActiveTouches;
 		Vector2 lastMousePosition;
+
+		#pragma warning disable 0414
+		Touch mouseTouch;
+		#pragma warning restore 0414
 
 
 		protected TouchManager()
@@ -99,6 +102,7 @@ namespace InControl
 			activeTouches = null;
 			readOnlyActiveTouches = null;
 			touchControls = null;
+			OnSetup = null;
 		}
 
 
@@ -346,7 +350,7 @@ namespace InControl
 			return touchCamera.ScreenToWorldPoint( new Vector3( point.x, point.y, -touchCamera.transform.position.z ) );
 		}
 
-		
+
 		Vector3 ConvertViewToWorldPoint( Vector2 point )
 		{
 			if (touchCamera == null)
@@ -362,8 +366,8 @@ namespace InControl
 		public static ReadOnlyCollection<Touch> Touches
 		{
 			get
-			{ 
-				return Instance.readOnlyActiveTouches; 
+			{
+				return Instance.readOnlyActiveTouches;
 			}
 		}
 
@@ -371,8 +375,8 @@ namespace InControl
 		public static int TouchCount
 		{
 			get
-			{ 
-				return Instance.activeTouches.Count; 
+			{
+				return Instance.activeTouches.Count;
 			}
 		}
 
@@ -394,7 +398,7 @@ namespace InControl
 			return Instance.ConvertScreenToWorldPoint( point );
 		}
 
-		
+
 		public static Vector3 ViewToWorldPoint( Vector2 point )
 		{
 			return Instance.ConvertViewToWorldPoint( point );
@@ -436,92 +440,92 @@ namespace InControl
 
 
 		public static Camera Camera
-		{ 
+		{
 			get
-			{ 
-				return Instance.touchCamera; 
-			} 
+			{
+				return Instance.touchCamera;
+			}
 		}
 
 
 		public static InputDevice Device
-		{ 
+		{
 			get
-			{ 
-				return Instance.device; 
-			} 
+			{
+				return Instance.device;
+			}
 		}
 
 
 		public static Vector3 ViewSize
-		{ 
+		{
 			get
-			{ 
-				return Instance.viewSize; 
-			} 
+			{
+				return Instance.viewSize;
+			}
 		}
 
 
 		public static float PercentToWorld
-		{ 
+		{
 			get
-			{ 
-				return Instance.percentToWorld; 
-			} 
+			{
+				return Instance.percentToWorld;
+			}
 		}
 
 
 		public static float HalfPercentToWorld
-		{ 
+		{
 			get
-			{ 
-				return Instance.halfPercentToWorld; 
-			} 
+			{
+				return Instance.halfPercentToWorld;
+			}
 		}
 
 
 		public static float PixelToWorld
-		{ 
+		{
 			get
-			{ 
-				return Instance.pixelToWorld; 
-			} 
+			{
+				return Instance.pixelToWorld;
+			}
 		}
 
 
 		public static float HalfPixelToWorld
-		{ 
+		{
 			get
-			{ 
-				return Instance.halfPixelToWorld; 
-			} 
+			{
+				return Instance.halfPixelToWorld;
+			}
 		}
 
 
 		public static Vector2 ScreenSize
-		{ 
+		{
 			get
-			{ 
-				return Instance.screenSize; 
-			} 
+			{
+				return Instance.screenSize;
+			}
 		}
 
 
 		public static Vector2 HalfScreenSize
-		{ 
+		{
 			get
-			{ 
-				return Instance.halfScreenSize; 
-			} 
+			{
+				return Instance.halfScreenSize;
+			}
 		}
 
 
 		public static GizmoShowOption ControlsShowGizmos
-		{ 
+		{
 			get
-			{ 
-				return Instance.controlsShowGizmos; 
-			} 
+			{
+				return Instance.controlsShowGizmos;
+			}
 		}
 
 
@@ -531,7 +535,7 @@ namespace InControl
 			{
 				return Instance.controlsEnabled;
 			}
-			
+
 			set
 			{
 				Instance.controlsEnabled = value;

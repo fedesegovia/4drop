@@ -310,25 +310,25 @@ namespace InControl
 
 		void ProcessMouseEvent()
 		{
-			var mousePointerEventData = GetMousePointerEventData();
+			var mousePointerEventData = this.GetMousePointerEventData();
 			var pressed = mousePointerEventData.AnyPressesThisFrame();
 			var released = mousePointerEventData.AnyReleasesThisFrame();
-			var mouseButtonEventData = mousePointerEventData[PointerEventData.InputButton.Left];
-			if (!UseMouse( pressed, released, mouseButtonEventData.buttonData ))
+			var eventData = mousePointerEventData.GetButtonState( PointerEventData.InputButton.Left ).eventData;
+			if (!UseMouse( pressed, released, eventData.buttonData ))
 			{
 				return;
 			}
-			ProcessMousePress( mouseButtonEventData );
-			ProcessMove( mouseButtonEventData.buttonData );
-			ProcessDrag( mouseButtonEventData.buttonData );
-			ProcessMousePress( mousePointerEventData[PointerEventData.InputButton.Right] );
-			ProcessDrag( mousePointerEventData[PointerEventData.InputButton.Right].buttonData );
-			ProcessMousePress( mousePointerEventData[PointerEventData.InputButton.Middle] );
-			ProcessDrag( mousePointerEventData[PointerEventData.InputButton.Middle].buttonData );
-			if (!Mathf.Approximately( mouseButtonEventData.buttonData.scrollDelta.sqrMagnitude, 0.0f ))
+			ProcessMousePress( eventData );
+			ProcessMove( eventData.buttonData );
+			ProcessDrag( eventData.buttonData );
+			ProcessMousePress( mousePointerEventData.GetButtonState( PointerEventData.InputButton.Right ).eventData );
+			ProcessDrag( mousePointerEventData.GetButtonState( PointerEventData.InputButton.Right ).eventData.buttonData );
+			ProcessMousePress( mousePointerEventData.GetButtonState( PointerEventData.InputButton.Middle ).eventData );
+			ProcessDrag( mousePointerEventData.GetButtonState( PointerEventData.InputButton.Middle ).eventData.buttonData );
+			if (!Mathf.Approximately( eventData.buttonData.scrollDelta.sqrMagnitude, 0.0f ))
 			{
-				var eventHandler = ExecuteEvents.GetEventHandler<IScrollHandler>( mouseButtonEventData.buttonData.pointerCurrentRaycast.go );
-				ExecuteEvents.ExecuteHierarchy<IScrollHandler>( eventHandler, mouseButtonEventData.buttonData, ExecuteEvents.scrollHandler );
+				GameObject eventHandler = ExecuteEvents.GetEventHandler<IScrollHandler>( eventData.buttonData.pointerCurrentRaycast.gameObject );
+				ExecuteEvents.ExecuteHierarchy<IScrollHandler>( eventHandler, eventData.buttonData, ExecuteEvents.scrollHandler );
 			}
 		}
 
@@ -345,24 +345,25 @@ namespace InControl
 		}
 
 
-		void ProcessMousePress( PointerInputModule.MouseButtonEventData data )
+		private void ProcessMousePress( PointerInputModule.MouseButtonEventData data )
 		{
 			var buttonData = data.buttonData;
-			var go = buttonData.pointerCurrentRaycast.go;
+			var gameObject = buttonData.pointerCurrentRaycast.gameObject;
 			if (data.PressedThisFrame())
 			{
 				buttonData.eligibleForClick = true;
 				buttonData.delta = Vector2.zero;
 				buttonData.dragging = false;
+				buttonData.useDragThreshold = true;
 				buttonData.pressPosition = buttonData.position;
 				buttonData.pointerPressRaycast = buttonData.pointerCurrentRaycast;
-				var gameObject = ExecuteEvents.ExecuteHierarchy<IPointerDownHandler>( go, buttonData, ExecuteEvents.pointerDownHandler );
-				if (gameObject == null)
+				var gameObject2 = ExecuteEvents.ExecuteHierarchy<IPointerDownHandler>( gameObject, buttonData, ExecuteEvents.pointerDownHandler );
+				if (gameObject2 == null)
 				{
-					gameObject = ExecuteEvents.GetEventHandler<IPointerClickHandler>( go );
+					gameObject2 = ExecuteEvents.GetEventHandler<IPointerClickHandler>( gameObject );
 				}
 				float unscaledTime = Time.unscaledTime;
-				if (gameObject == buttonData.lastPress)
+				if (gameObject2 == buttonData.lastPress)
 				{
 					float num = unscaledTime - buttonData.clickTime;
 					if (num < 0.3f)
@@ -379,23 +380,21 @@ namespace InControl
 				{
 					buttonData.clickCount = 1;
 				}
-				buttonData.pointerPress = gameObject;
-				buttonData.rawPointerPress = go;
+				buttonData.pointerPress = gameObject2;
+				buttonData.rawPointerPress = gameObject;
 				buttonData.clickTime = unscaledTime;
-				buttonData.pointerDrag = ExecuteEvents.GetEventHandler<IDragHandler>( go );
+				buttonData.pointerDrag = ExecuteEvents.GetEventHandler<IDragHandler>( gameObject );
 				if (buttonData.pointerDrag != null)
 				{
-					ExecuteEvents.Execute<IPopulateDragThresholdHandler>( buttonData.pointerDrag, buttonData, ExecuteEvents.populateDragThreshold );
+					ExecuteEvents.Execute<IInitializePotentialDragHandler>( buttonData.pointerDrag, buttonData, ExecuteEvents.initializePotentialDrag );
 				}
-				var eventHandler = ExecuteEvents.GetEventHandler<ISelectHandler>( go );
-				base.eventSystem.SetSelectedGameObject( eventHandler, buttonData );
 			}
 
 			if (data.ReleasedThisFrame())
 			{
 				ExecuteEvents.Execute<IPointerUpHandler>( buttonData.pointerPress, buttonData, ExecuteEvents.pointerUpHandler );
-				var eventHandler2 = ExecuteEvents.GetEventHandler<IPointerClickHandler>( go );
-				if (buttonData.pointerPress == eventHandler2 && buttonData.eligibleForClick)
+				var eventHandler = ExecuteEvents.GetEventHandler<IPointerClickHandler>( gameObject );
+				if (buttonData.pointerPress == eventHandler && buttonData.eligibleForClick)
 				{
 					ExecuteEvents.Execute<IPointerClickHandler>( buttonData.pointerPress, buttonData, ExecuteEvents.pointerClickHandler );
 				}
@@ -403,7 +402,7 @@ namespace InControl
 				{
 					if (buttonData.pointerDrag != null)
 					{
-						ExecuteEvents.ExecuteHierarchy<IDropHandler>( go, buttonData, ExecuteEvents.dropHandler );
+						ExecuteEvents.ExecuteHierarchy<IDropHandler>( gameObject, buttonData, ExecuteEvents.dropHandler );
 					}
 				}
 				buttonData.eligibleForClick = false;
@@ -415,10 +414,10 @@ namespace InControl
 					ExecuteEvents.Execute<IEndDragHandler>( buttonData.pointerDrag, buttonData, ExecuteEvents.endDragHandler );
 				}
 				buttonData.pointerDrag = null;
-				if (go != buttonData.pointerEnter)
+				if (gameObject != buttonData.pointerEnter)
 				{
 					base.HandlePointerExitAndEnter( buttonData, null );
-					base.HandlePointerExitAndEnter( buttonData, go );
+					base.HandlePointerExitAndEnter( buttonData, gameObject );
 				}
 			}
 		}

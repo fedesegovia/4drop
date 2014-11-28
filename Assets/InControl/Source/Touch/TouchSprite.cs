@@ -36,6 +36,9 @@ namespace InControl
 		[SerializeField]
 		Vector2 size = new Vector2( 10.0f, 10.0f );
 
+		[SerializeField]
+		bool lockAspectRatio = true;
+
 		[SerializeField, HideInInspector]
 		Vector2 worldSize;
 
@@ -93,7 +96,14 @@ namespace InControl
 				else
 				{
 					ScaleSpriteInPercent( spriteGameObject, spriteRenderer, size );
-					worldSize = size * TouchManager.PercentToWorld;
+					if (lockAspectRatio)
+					{
+						worldSize = size * TouchManager.PercentToWorld;
+					}
+					else
+					{
+						worldSize = Vector2.Scale( size, TouchManager.ViewSize );
+					}
 				}
 
 				Dirty = false;
@@ -155,11 +165,19 @@ namespace InControl
 				return;
 			}
 
-			var scale = Mathf.Min( TouchManager.ViewSize.x, TouchManager.ViewSize.y );
-			var scaleX = scale * size.x / spriteRenderer.sprite.bounds.size.x;
-			var scaleY = scale * size.y / spriteRenderer.sprite.bounds.size.y;
-
-			spriteGameObject.transform.localScale = new Vector3( scaleX, scaleY );
+			if (lockAspectRatio)
+			{
+				var scale = Mathf.Min( TouchManager.ViewSize.x, TouchManager.ViewSize.y );
+				var scaleX = scale * size.x / spriteRenderer.sprite.bounds.size.x;
+				var scaleY = scale * size.y / spriteRenderer.sprite.bounds.size.y;
+				spriteGameObject.transform.localScale = new Vector3( scaleX, scaleY );
+			}
+			else
+			{
+				var scaleX = TouchManager.ViewSize.x * size.x / spriteRenderer.sprite.bounds.size.x;
+				var scaleY = TouchManager.ViewSize.y * size.y / spriteRenderer.sprite.bounds.size.y;
+				spriteGameObject.transform.localScale = new Vector3( scaleX, scaleY );
+			}
 		}
 
 
