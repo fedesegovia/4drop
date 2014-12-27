@@ -35,7 +35,7 @@ namespace Drop
 	//				maxDistance = minOrtographicSize;
 	//			}
 				
-				camera.orthographicSize = maxDistance;
+				camera.orthographicSize = Mathf.Clamp(maxDistance, 40, 150) ;
 				
 				// Move camera to the middle point between all players
 				Vector3 middlePoint = Vector3.zero;

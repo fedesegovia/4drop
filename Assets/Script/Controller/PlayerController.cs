@@ -16,6 +16,9 @@ namespace Drop
 		Vector3 direction = Vector3.zero;
 		Vector3 deltaToNewPosition = Vector3.zero;
 
+		GameObject capturedFlag = null;
+		bool flagIsAvailable = false;
+
 		void Start()
         {
 			UpdatePlayerInput ();
@@ -43,6 +46,7 @@ namespace Drop
                 Move();
                 Shoot();
             }
+
 	    }
 
         void Move()
@@ -65,6 +69,13 @@ namespace Drop
 				float eulerRotationInZ = Mathf.Atan2 (direction.y, direction.x) * Mathf.Rad2Deg;
 				transform.rotation = Quaternion.Euler (0, 0, eulerRotationInZ - 90);
 			}
+		}
+
+		public void AttachFlag(GameObject flag){
+			capturedFlag = flag;
+			flag.transform.parent = transform;
+			flag.transform.localPosition = -Vector3.up * 4;
+			StartCoroutine (WaitBeforeFlagIsAvailable ());
 		}
 
 		void Shoot()
@@ -97,5 +108,58 @@ namespace Drop
 //				}
 //			}
         }
+
+		public bool HasFlag(){
+			if (capturedFlag != null)
+				return true;
+			return false;
+		}
+
+		IEnumerator WaitBeforeFlagIsAvailable(){
+			yield return new WaitForSeconds (2);
+			flagIsAvailable = true;
+		}
+
+		void OnTriggerEnter2D(Collider2D collider){
+			if (capturedFlag != null && flagIsAvailable && CollisionIsPlayer(collider)) {
+				PlayerController player = GetPlayerController(collider.gameObject);
+				player.AttachFlag(capturedFlag);
+				capturedFlag = null;
+				flagIsAvailable = false;
+			}
+
+		}
+
+		bool CollisionIsPlayer(Collider2D collider){
+			PlayerController player = GetPlayerController (collider.gameObject);
+			if (player != null)
+				return true;
+			return false;
+		}
+
+		PlayerController GetPlayerController(GameObject player){
+			return player.GetComponent<PlayerController> ();
+		}
+
+		public void GhostMode(){
+			CircleCollider2D collider = GetComponent<CircleCollider2D> ();
+			collider.enabled = false;
+			StartCoroutine (EndGhostMode(collider));
+		}
+
+		IEnumerator EndGhostMode(CircleCollider2D collider){
+			yield return new WaitForSeconds (3);
+			collider.enabled = true;
+		}
+
+		public void SpeedUp(){
+			speed = speed * 1.5f;
+			StartCoroutine (SlowDown());
+		}
+
+		IEnumerator SlowDown(){
+			yield return new WaitForSeconds (1);
+			speed = speed / 1.5f;
+		}
 	}
 }
