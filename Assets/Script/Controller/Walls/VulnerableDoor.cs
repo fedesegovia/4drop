@@ -5,13 +5,16 @@ namespace Drop{
 	public class VulnerableDoor : MonoBehaviour {
 
 		public float secondsToDestroy = 1;
+        public float timeOpen = 5;
+        float timer;
 		BoxCollider2D collider;
-		SpriteRenderer sprite;
+		MeshRenderer renderer;
 
 		// Use this for initialization
 		void Start () {
-			collider = GetComponent<BoxCollider2D> ();
-			sprite = GetComponent<SpriteRenderer> ();
+            timer = secondsToDestroy;
+            collider = GetComponent<BoxCollider2D> ();
+			renderer = GetComponent<MeshRenderer> ();
 		}
 		
 		// Update is called once per frame
@@ -20,14 +23,24 @@ namespace Drop{
 		}
 
 		void OnCollisionStay2D(){
-			Debug.Log (secondsToDestroy);
-			secondsToDestroy -= Time.deltaTime;
-			Color materialColor = sprite.material.color;
+			timer -= Time.deltaTime;
+			Color materialColor = renderer.material.color;
 			materialColor.a -= Time.deltaTime;
-			sprite.material.color = materialColor;
-			if (secondsToDestroy < 0) {
+			renderer.material.color = materialColor;
+			if (timer < 0) {
 				collider.enabled = false;
+                StartCoroutine(CloseDoor());
 			}
 		}
+
+        IEnumerator CloseDoor()
+        {
+            yield return new WaitForSeconds(timeOpen);
+            Color materialColor = renderer.material.color;
+            materialColor.a = 1;
+            renderer.material.color = materialColor;
+            collider.enabled = true;
+            timer = secondsToDestroy;
+        }
 	}
 }

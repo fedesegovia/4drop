@@ -5,9 +5,11 @@ namespace Drop{
 
 		bool isDoorOpen = true;
 		BoxCollider2D collider;
+        Animator animator;
 
 		// Use this for initialization
 		void Start () {
+            animator = GetComponent<Animator>();
 			collider = GetComponent<BoxCollider2D>();
 			collider.enabled = false;
 		}
@@ -19,8 +21,7 @@ namespace Drop{
 
 		void OnTriggerExit2D(){
 			if (isDoorOpen) {
-				collider.enabled = true;
-				isDoorOpen = false;
+                CloseDoor();
 				StartCoroutine(OpenDoor());
 			}
 				
@@ -28,9 +29,17 @@ namespace Drop{
 
 		IEnumerator OpenDoor(){
 			yield return new WaitForSeconds (2);
+            animator.SetBool("open", true);
 			collider.enabled = false;
 			isDoorOpen = true;
+
 		}
+
+        void CloseDoor(){
+            animator.SetBool("open", false);
+            collider.enabled = true;
+            isDoorOpen = false;
+        }
 	}
 }
 
