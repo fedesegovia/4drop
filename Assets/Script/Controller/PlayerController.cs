@@ -12,7 +12,6 @@ namespace Drop
 
 		public Sprite[] PlayerSprites;
 
-
 		Vector3 direction = Vector3.zero;
 		Vector3 deltaToNewPosition = Vector3.zero;
 
@@ -46,7 +45,6 @@ namespace Drop
                 Move();
                 Shoot();
             }
-
 	    }
 
         void Move()
@@ -73,9 +71,16 @@ namespace Drop
 
 		public void AttachFlag(GameObject flag){
 			capturedFlag = flag;
-			flag.transform.parent = transform;
-			flag.transform.localPosition = -Vector3.up * 4;
+			flag.transform.parent = null;
+
+			flag.GetComponent<FlagController>().FollowPlayer(this);
+
 			StartCoroutine (WaitBeforeFlagIsAvailable ());
+		}
+
+		public void LoseFlag(){
+			capturedFlag = null;
+			flagIsAvailable = true;
 		}
 
 		void Shoot()
@@ -123,11 +128,11 @@ namespace Drop
 		void OnTriggerEnter2D(Collider2D collider){
 			if (capturedFlag != null && flagIsAvailable && CollisionIsPlayer(collider)) {
 				PlayerController player = GetPlayerController(collider.gameObject);
-				player.AttachFlag(capturedFlag);
-				capturedFlag = null;
-				flagIsAvailable = false;
-			}
 
+				LoseFlag();
+
+				player.AttachFlag(capturedFlag);
+			}
 		}
 
 		bool CollisionIsPlayer(Collider2D collider){

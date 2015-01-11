@@ -3,25 +3,12 @@ using System.Collections;
 namespace Drop
 {
 	public class FlagPickUpController : MonoBehaviour {
-
-		public GameObject flag;
-		bool isFlagInBase = true;
-
-		// Use this for initialization
-		void Start () {
-		
-		}
-		
-		// Update is called once per frame
-		void Update () {
-		
-		}
+		public Collider2D pickUpTrigger = null;
 
 		void OnTriggerEnter2D(Collider2D collider){
-			if (isFlagInBase && CollisionIsPlayer(collider)) {
+			if (CollisionIsPlayer(collider)) {
 				PlayerController player = GetPlayerController(collider.gameObject);
-				player.AttachFlag(flag);
-				isFlagInBase = false;
+				player.AttachFlag(this.gameObject);
 			}
 		}
 
@@ -34,6 +21,16 @@ namespace Drop
 
 		PlayerController GetPlayerController(GameObject player){
 			return player.GetComponent<PlayerController> ();
+		}
+
+		public void EnablePickingUp(){
+			if(pickUpTrigger)
+				pickUpTrigger.enabled = true;
+		}
+
+		public void DisablePickingUp(){
+			if(pickUpTrigger)
+				pickUpTrigger.enabled = false;
 		}
 	}
 }
