@@ -73,6 +73,8 @@ namespace Drop
 			capturedFlag = flag;
 			flag.transform.parent = null;
 
+			flag.transform.position = transform.position;
+
 			flag.GetComponent<FlagController>().FollowPlayer(this);
 
 			StartCoroutine (WaitBeforeFlagIsAvailable ());
@@ -129,9 +131,9 @@ namespace Drop
 			if (capturedFlag != null && flagIsAvailable && CollisionIsPlayer(collider)) {
 				PlayerController player = GetPlayerController(collider.gameObject);
 
-				LoseFlag();
-
 				player.AttachFlag(capturedFlag);
+
+				LoseFlag();
 			}
 		}
 

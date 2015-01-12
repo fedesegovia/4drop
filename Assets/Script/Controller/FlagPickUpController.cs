@@ -6,17 +6,11 @@ namespace Drop
 		public Collider2D pickUpTrigger = null;
 
 		void OnTriggerEnter2D(Collider2D collider){
-			if (CollisionIsPlayer(collider)) {
-				PlayerController player = GetPlayerController(collider.gameObject);
+			PlayerController player = GetPlayerController (collider.gameObject);
+
+			if (player != null && !player.HasFlag()) {
 				player.AttachFlag(this.gameObject);
 			}
-		}
-
-		bool CollisionIsPlayer(Collider2D collider){
-			PlayerController player = GetPlayerController (collider.gameObject);
-			if (player != null)
-				return true;
-			return false;
 		}
 
 		PlayerController GetPlayerController(GameObject player){
