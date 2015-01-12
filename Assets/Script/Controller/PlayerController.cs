@@ -43,7 +43,6 @@ namespace Drop
             else
             {
                 Move();
-                Shoot();
             }
 	    }
 
@@ -84,37 +83,6 @@ namespace Drop
 			capturedFlag = null;
 			flagIsAvailable = true;
 		}
-
-		void Shoot()
-		{
-//            TwoAxisInputControl rightStick = PlayerInputDevice.RightStick;
-//            Vector2 direction = rightStick.Vector;
-//
-//			Debug.Log (direction);
-//
-//			if (Mathf.Abs (direction.x) > .7f)
-//				direction = (Vector2.right * direction.x).normalized;
-//			
-//			if (Mathf.Abs (direction.y) > .7f)
-//				direction = (Vector2.up * direction.y).normalized;
-//
-//			if (direction.magnitude > .7f) 
-//			{
-//				if(transform.childCount > 0)
-//				{
-//					voxelTransform = transform.GetChild(0);
-//					
-//					if (voxelTransform != null)
-//					{
-//						voxelTransform.parent = null;
-//						PutBulletControllerOnVoxel(voxelTransform.gameObject);
-//						
-//						voxelTransform.GetComponent<BulletController>().Direction.Set(direction.x, 0, direction.y);
-//						voxelsCount--;
-//					}
-//				}
-//			}
-        }
 
 		public bool HasFlag(){
 			if (capturedFlag != null)
