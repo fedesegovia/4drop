@@ -26,7 +26,8 @@ namespace Drop
 
 		void UpdatePlayerInput ()
 		{
-			PlayerInputDevice = InputManager.Devices[PlayerId];
+			if(InputManager.Devices.Count > 0)
+				PlayerInputDevice = InputManager.Devices[PlayerId];
 		}
 
 		void UpdatePlayerSprite ()
@@ -36,14 +37,8 @@ namespace Drop
 
 	    void Update () {
             PlayerInputDevice = (InputManager.Devices.Count > PlayerId) ? InputManager.Devices[PlayerId] : null;
-            if (PlayerInputDevice == null)
-            {
-                // No Controller for this player....
-            }
-            else
-            {
-                Move();
-            }
+            
+			Move();
 	    }
 
         void Move()
@@ -54,17 +49,26 @@ namespace Drop
 
 		void UpdateVelocity ()
 		{
-			rigidbody2D.velocity = PlayerInputDevice.Direction.Vector * speed;
+			if(PlayerInputDevice != null)
+				rigidbody2D.velocity = PlayerInputDevice.Direction.Vector * speed;
+			else
+				rigidbody2D.velocity = transform.up * Input.GetAxis("Vertical") * speed;
 		}
 
 		void RotateToFaceCorrectDirection ()
 		{
-			direction.Set (PlayerInputDevice.Direction.X, PlayerInputDevice.Direction.Y, 0);
-			if ( direction.magnitude > Config.Instance.InputControllerSensitivity )
-			{
-				deltaToNewPosition = direction - transform.position;
-				float eulerRotationInZ = Mathf.Atan2 (direction.y, direction.x) * Mathf.Rad2Deg;
-				transform.rotation = Quaternion.Euler (0, 0, eulerRotationInZ - 90);
+			if(PlayerInputDevice != null){
+				direction.Set (PlayerInputDevice.Direction.X, PlayerInputDevice.Direction.Y, 0);
+				if ( direction.magnitude > Config.Instance.InputControllerSensitivity )
+				{
+					deltaToNewPosition = direction - transform.position;
+					float eulerRotationInZ = Mathf.Atan2 (direction.y, direction.x) * Mathf.Rad2Deg;
+					transform.rotation = Quaternion.Euler (0, 0, eulerRotationInZ - 90);
+				}
+			}
+			else{
+				float rotation = -Input.GetAxis("Horizontal") * 3.0f;
+				transform.Rotate(0, 0, rotation);
 			}
 		}
 

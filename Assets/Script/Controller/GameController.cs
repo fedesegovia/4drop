@@ -15,7 +15,10 @@ namespace Drop
 
         void SetNumberOfPlayersFromConnectedControllers()
         {
-            Game.Instance.PlayerCount = InputManager.Devices.Count;
+			if(InputManager.Devices.Count > 0)
+            	Game.Instance.PlayerCount = InputManager.Devices.Count;
+			else
+				Game.Instance.PlayerCount = 1;
         }
 
         void CreatePlayerAvatars()
