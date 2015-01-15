@@ -7,18 +7,15 @@ namespace Drop
     public class PlayerController : MonoBehaviour {
         public int PlayerId = 0;
         public float speed = 50; // Speed is messured in units per second. One Unity unit equals one meter.
-
-		InputDevice PlayerInputDevice;
-
 		public Sprite[] PlayerSprites;
 
-		Vector3 direction = Vector3.zero;
-		Vector3 deltaToNewPosition = Vector3.zero;
+		protected InputDevice PlayerInputDevice;
+		protected Vector3 direction = Vector3.zero;
+		protected Vector3 deltaToNewPosition = Vector3.zero;
+		protected GameObject capturedFlag = null;
+		protected bool flagIsAvailable = false;
 
-		GameObject capturedFlag = null;
-		bool flagIsAvailable = false;
-
-		void Start()
+		protected virtual void Start()
         {
 			UpdatePlayerInput ();
 			UpdatePlayerSprite ();
@@ -47,12 +44,7 @@ namespace Drop
 			RotateToFaceCorrectDirection ();
         }
 
-		void UpdateVelocity ()
-		{
-			if(PlayerInputDevice != null)
-				rigidbody2D.velocity = PlayerInputDevice.Direction.Vector * speed;
-			else
-				rigidbody2D.velocity = transform.up * Input.GetAxis("Vertical") * speed;
+		protected virtual void UpdateVelocity (){
 		}
 
 		void RotateToFaceCorrectDirection ()
@@ -109,7 +101,24 @@ namespace Drop
 			}
 		}
 
+		void OnTriggerEnter(Collider collider){
+			if (capturedFlag != null && flagIsAvailable && CollisionIsPlayer(collider)) {
+				PlayerController player = GetPlayerController(collider.gameObject);
+				
+				player.AttachFlag(capturedFlag);
+				
+				LoseFlag();
+			}
+		}
+
 		bool CollisionIsPlayer(Collider2D collider){
+			PlayerController player = GetPlayerController (collider.gameObject);
+			if (player != null)
+				return true;
+			return false;
+		}
+
+		bool CollisionIsPlayer(Collider collider){
 			PlayerController player = GetPlayerController (collider.gameObject);
 			if (player != null)
 				return true;
@@ -120,13 +129,15 @@ namespace Drop
 			return player.GetComponent<PlayerController> ();
 		}
 
-		public void GhostMode(){
-			CircleCollider2D collider = GetComponent<CircleCollider2D> ();
-			collider.enabled = false;
-			StartCoroutine (EndGhostMode(collider));
+		public virtual void GhostMode(){
 		}
 
-		IEnumerator EndGhostMode(CircleCollider2D collider){
+		protected IEnumerator EndGhostMode(CircleCollider2D collider){
+			yield return new WaitForSeconds (3);
+			collider.enabled = true;
+		}
+
+		protected IEnumerator EndGhostMode(SphereCollider collider){
 			yield return new WaitForSeconds (3);
 			collider.enabled = true;
 		}
